@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "@types/body-parser": "^1.19.2",
+    "express": "^4.18.2",
+    "nanoid": "3.0.0"
   },
   "scripts": {
     "watch": "tsc -w",
