@@ -1,4 +1,5 @@
 import express from "express"
+import { runDb } from "./common/database/userDatabase"
 import { authRouter } from "./rotes/auth-router"
 import { usersRouter } from "./rotes/users-router"
 
@@ -8,7 +9,9 @@ const parser = express.json()
 app.use(parser)
 app.use("/auth", authRouter)
 app.use("/users", usersRouter)
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+const startApp = async () => {
+  await runDb()
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
+}

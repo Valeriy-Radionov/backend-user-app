@@ -1,3 +1,5 @@
+import { client } from "../common/database/userDatabase"
+
 export type UserType = {
   id: string
   name: string
@@ -11,29 +13,34 @@ export let users: UserType[] = [
   { id: "frfrfrf", name: "Boris", email: "tra-berler@mail.ru", password: "34567", registrationDate: new Date().toLocaleString(), lastLoginDate: new Date().toLocaleString(), blockStatus: false },
 ]
 
+const usersCollection = client.db("user").collection<UserType>("users")
+
 export const usersRepository = {
-  getUsers() {
-    if (users) {
-      return users
-    } else {
+  async getUsers(): Promise<UserType[] | null | undefined> {
+    try {
+      if (users) {
+        const users = await usersCollection.find({}).toArray()
+        return users
+      }
+    } catch {
       return null
     }
   },
-  blockUser(id: string, isBlocked: boolean) {
-    const userId = users.findIndex((el) => el.id === id)
-    if (userId) {
-      users[userId].blockStatus = isBlocked
-      return true
+  async blockUser(id: string, isBlocked: boolean): Promise<boolean | undefined> {
+    try {
+      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { blockStatus: isBlocked })
+      return newUser ? true : false
+    } catch {
+      console.log("Error: Invalid block request")
+      return false
     }
-    return false
   },
-  deleteUser(id: string) {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].id === id) {
-        users.splice(i, 1)
-        return true
-      }
+  async deleteUser(id: string): Promise<boolean | undefined> {
+    try {
+      const isDeleted = (await usersCollection.findOneAndDelete({ id: id })).ok
+      return isDeleted === 1 ? true : false
+    } catch {
+      console.log("Delete is failure")
     }
-    return false
   },
 }
