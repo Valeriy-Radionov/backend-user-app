@@ -8,11 +8,12 @@ export const authRepository = {
     const date = new Date().toLocaleString()
     const blockStatus = false
     const { name, email, password } = userRequestData
+
     const newUser: UserType = {
       id: id,
-      name: name,
-      email: email,
-      password: password,
+      name: name.trim(),
+      email: email.trim(),
+      password: password.trim(),
       registrationDate: date,
       lastLoginDate: date,
       blockStatus: blockStatus,
@@ -26,8 +27,6 @@ export const authRepository = {
     if (requestUser) {
       const userData: UserType = users.find((el) => el.email === requestUser.email && el.password === requestUser.password)!
       return userData
-    } else {
-      return null
     }
   },
   logOut() {},
