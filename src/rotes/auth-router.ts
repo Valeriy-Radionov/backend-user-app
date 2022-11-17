@@ -2,7 +2,6 @@ import { Request, Response, Router } from "express"
 import { body } from "express-validator"
 import { inputValidatorsMiddleware } from "../common/validators/validators"
 import { authRepository } from "../repositories/auth-rep"
-import { UserType } from "../repositories/users-rep"
 
 export type LoginDataType = {
   email: string

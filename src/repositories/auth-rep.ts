@@ -1,9 +1,7 @@
 import { nanoid } from "nanoid"
-import { client } from "../common/database/userDatabase"
+import { usersCollection } from "../common/database/userDatabase"
 import { LoginDataType, UserRequestDataType } from "../rotes/auth-router"
-import { users, UserType } from "./users-rep"
-
-const usersCollection = client.db("user").collection<UserType>("users")
+import { UserType } from "./users-rep"
 
 export const authRepository = {
   async registration(userRequestData: UserRequestDataType): Promise<UserType | undefined | null> {

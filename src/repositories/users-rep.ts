@@ -1,4 +1,4 @@
-import { client } from "../common/database/userDatabase"
+import { usersCollection } from "../common/database/userDatabase"
 
 export type UserType = {
   id: string
@@ -9,19 +9,12 @@ export type UserType = {
   lastLoginDate: string
   blockStatus: boolean
 }
-export let users: UserType[] = [
-  { id: "frfrfrf", name: "Boris", email: "tra-berler@mail.ru", password: "34567", registrationDate: new Date().toLocaleString(), lastLoginDate: new Date().toLocaleString(), blockStatus: false },
-]
-
-const usersCollection = client.db("user").collection<UserType>("users")
 
 export const usersRepository = {
   async getUsers(): Promise<UserType[] | null | undefined> {
     try {
-      if (users) {
-        const users = await usersCollection.find({}).toArray()
-        return users
-      }
+      const users = await usersCollection.find({}).toArray()
+      return users
     } catch {
       return null
     }

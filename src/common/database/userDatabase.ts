@@ -1,12 +1,14 @@
 import { MongoClient } from "mongodb"
+import { UserType } from "../../repositories/users-rep"
 
-const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017"
-export const client = new MongoClient(mongoURI)
-
+const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0:27017"
+export const client = new MongoClient(mongoUri)
+const usersDb = client.db("user")
+export const usersCollection = usersDb.collection<UserType>("users")
 export async function runDb() {
   try {
     await client.connect()
-    await client.db("users").command({ ping: 1 })
+    await usersDb.command({ ping: 1 })
     console.log("Connect seccessfully to database")
   } catch {
     console.log("Can't connect to database")

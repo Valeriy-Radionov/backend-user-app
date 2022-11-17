@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express"
-import { usersRepository, UserType } from "../repositories/users-rep"
+import { usersRepository } from "../repositories/users-rep"
 
 export const usersRouter = Router({})
 
