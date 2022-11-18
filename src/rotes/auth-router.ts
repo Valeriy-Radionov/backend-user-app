@@ -16,7 +16,7 @@ export const authRouter = Router({})
 
 const nameValidator = body("name").trim().isLength({ min: 1 }).withMessage("Name is requared")
 const emailValidator = body("email").trim().isEmail().withMessage("Incorrect email")
-const passwordValidator = body("password").trim().isLength({ min: 1 }).ltrim().withMessage("Password is requared")
+const passwordValidator = body("password").trim().isLength({ min: 1 }).withMessage("Password is requared")
 
 authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response) => {
   try {
@@ -25,6 +25,8 @@ authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMidd
     const responseData = await authRepository.login(requestData)
     if (responseData) {
       response.status(200).send(responseData)
+    } else {
+      response.status(401).send("Register or check the entered login or password")
     }
   } catch {
     response.status(400).send("Incorrect email or password")
@@ -35,7 +37,7 @@ authRouter.post("/registration", nameValidator, passwordValidator, emailValidato
   try {
     const { email, password, name } = request.body
     const user: UserRequestDataType = { email: email, password: password, name: name }
-    const newUser = authRepository.registration(user)
+    const newUser = await authRepository.registration(user)
     if (newUser) {
       response.status(201).send(newUser)
     }

@@ -5,11 +5,11 @@ import { UserType } from "./users-rep"
 
 export const authRepository = {
   async registration(userRequestData: UserRequestDataType): Promise<UserType | undefined | null> {
-    const id = nanoid()
-    const date = new Date().toLocaleString()
-    const blockStatus = false
     try {
       const { name, email, password } = userRequestData
+      const id = nanoid()
+      const date = new Date().toLocaleString()
+      const blockStatus = false
       const newUser: UserType = {
         id: id,
         name: name,
@@ -20,8 +20,7 @@ export const authRepository = {
         blockStatus: blockStatus,
       }
       await usersCollection.insertOne(newUser)
-      const registredUser = await usersCollection.findOne({ email: email, password: password })
-      return registredUser
+      return newUser
     } catch {
       console.log("Invalid data of registration request")
     }
@@ -29,11 +28,17 @@ export const authRepository = {
   async login(requestUser: LoginDataType): Promise<UserType | undefined | null> {
     try {
       if (requestUser) {
-        const userData = usersCollection.findOne({ email: requestUser.email, password: requestUser.password })
-        return userData
+        const date = new Date().toLocaleString()
+        const userData = await usersCollection.findOneAndUpdate({ email: requestUser.email, password: requestUser.password }, { $set: { lastLoginDate: date } })
+
+        if (userData.value) {
+          return userData.value
+        } else {
+          return null
+        }
       }
-    } catch {
-      console.log("Invalid data of login request")
+    } catch (e) {
+      console.log("Error: Invalid data of login request")
     }
   },
   logOutLogout() {},
