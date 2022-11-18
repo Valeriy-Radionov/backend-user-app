@@ -7,17 +7,18 @@ export type LoginDataType = {
   email: string
   password: string
 }
-export type UserRequestDataType = {
+export type RegistrationDataType = {
   email: string
   password: string
   name: string
 }
+
 export const authRouter = Router({})
 
 const nameValidator = body("name").trim().isLength({ min: 1 }).withMessage("Name is requared")
 const emailValidator = body("email").trim().isEmail().withMessage("Incorrect email")
 const passwordValidator = body("password").trim().isLength({ min: 1 }).withMessage("Password is requared")
-//login
+
 authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body
@@ -32,11 +33,11 @@ authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMidd
     response.status(400).send("Incorrect email or password")
   }
 })
-//registration
+
 authRouter.post("/registration", nameValidator, passwordValidator, emailValidator, inputValidatorsMiddleware, async (request: Request, response: Response) => {
   try {
     const { email, password, name } = request.body
-    const user: UserRequestDataType = { email: email, password: password, name: name }
+    const user: RegistrationDataType = { email: email, password: password, name: name }
     const newUser = await authRepository.registration(user)
     if (newUser) {
       response.status(201).send(newUser)
@@ -45,7 +46,6 @@ authRouter.post("/registration", nameValidator, passwordValidator, emailValidato
     response.status(400).send("Ingorrect request data")
   }
 })
-//authorization
 authRouter.post("/me", async (request: Request, response: Response) => {
   try {
   } catch {}
