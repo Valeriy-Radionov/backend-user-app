@@ -1,10 +1,10 @@
 import { nanoid } from "nanoid"
 import { usersCollection } from "../common/database/userDatabase"
-import { LoginDataType, UserRequestDataType } from "../rotes/auth-router"
+import { LoginDataType, RegistrationDataType } from "../rotes/auth-router"
 import { UserType } from "./users-rep"
 
 export const authRepository = {
-  async registration(userRequestData: UserRequestDataType): Promise<UserType | undefined | null> {
+  async registration(userRequestData: RegistrationDataType): Promise<UserType | undefined | null> {
     try {
       const { name, email, password } = userRequestData
       const id = nanoid()
