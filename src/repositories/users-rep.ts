@@ -1,3 +1,4 @@
+import { ModifyResult } from "mongodb"
 import { usersCollection } from "../common/database/userDatabase"
 
 export type UserType = {
@@ -21,17 +22,20 @@ export const usersRepository = {
   },
   async blockUser(id: string, isBlocked: boolean): Promise<boolean | undefined> {
     try {
-      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { blockStatus: isBlocked })
-      return newUser ? true : false
+      console.log(id)
+      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { $set: { blockStatus: isBlocked } })
+      return newUser.value?.blockStatus
     } catch {
-      console.log("Error: Invalid block request")
+      console.log("Error: Invalid status block request")
       return false
     }
   },
   async deleteUser(id: string): Promise<boolean | undefined> {
     try {
-      const isDeleted = (await usersCollection.findOneAndDelete({ id: id })).ok
-      return isDeleted === 1 ? true : false
+      if (id) {
+        const isDeleted = await usersCollection.deleteOne({ id: id })
+        return isDeleted.deletedCount === 1
+      }
     } catch {
       console.log("Delete is failure")
     }
