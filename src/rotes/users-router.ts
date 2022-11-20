@@ -33,9 +33,9 @@ usersRouter.put("/:id", async (request: Request, response: Response) => {
   try {
     const isBlocked = request.body
     const id = request.params.id
-    const blockStatus = await usersRepository.blockUser(id, isBlocked)
-    if (blockStatus) {
-      response.status(200).send(`Block status: ${blockStatus}`)
+    const blockUser = await usersRepository.blockUser(id, isBlocked)
+    if (blockUser) {
+      response.status(200).send(blockUser)
     }
   } catch {
     response.status(400).send("Failure")

@@ -20,11 +20,10 @@ export const usersRepository = {
       return null
     }
   },
-  async blockUser(id: string, isBlocked: boolean): Promise<boolean | undefined> {
+  async blockUser(id: string, isBlocked: boolean): Promise<boolean> {
     try {
-      console.log(id)
-      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { $set: { blockStatus: isBlocked } })
-      return newUser.value?.blockStatus
+      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { $set: { blockStatus: isBlocked } }) //!возвращает новыйобьект не должно быть так
+      return newUser.ok === 1
     } catch {
       console.log("Error: Invalid status block request")
       return false
