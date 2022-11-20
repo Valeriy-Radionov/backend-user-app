@@ -10,7 +10,7 @@ export const authRepository = {
       const id = nanoid()
       const date = new Date().toLocaleString()
       const blockStatus = false
-      const resultCode = 0
+      const isAuth = true
       const newUser: UserType = {
         id: id,
         name: name,
@@ -19,6 +19,7 @@ export const authRepository = {
         registrationDate: date,
         lastLoginDate: date,
         blockStatus: blockStatus,
+        isAuth: isAuth,
       }
       await usersCollection.insertOne(newUser)
       return newUser
@@ -34,7 +35,7 @@ export const authRepository = {
         if (findUser?.blockStatus === true || !findUser) {
           return 1
         } else {
-          await usersCollection.findOneAndUpdate({ email: requestUser.email, password: requestUser.password }, { $set: { lastLoginDate: date } })
+          await usersCollection.findOneAndUpdate({ email: requestUser.email, password: requestUser.password }, { $set: { lastLoginDate: date, isAuth: true } })
           return 0
         }
       }

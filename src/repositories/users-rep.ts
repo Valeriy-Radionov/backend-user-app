@@ -9,6 +9,7 @@ export type UserType = {
   registrationDate: string
   lastLoginDate: string
   blockStatus: boolean
+  isAuth: boolean
 }
 
 export const usersRepository = {
