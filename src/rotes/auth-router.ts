@@ -1,11 +1,16 @@
 import { Request, Response, Router } from "express"
 import { body } from "express-validator"
+import { ResultCode } from "../common/constants"
 import { inputValidatorsMiddleware } from "../common/validators/validators"
 import { authRepository } from "../repositories/auth-rep"
 
 export type LoginDataType = {
   email: string
   password: string
+}
+export type LoginResponseType = {
+  resultCode: ResultCode
+  message: string
 }
 export type RegistrationDataType = {
   email: string
@@ -19,18 +24,18 @@ const nameValidator = body("name").trim().isLength({ min: 1 }).withMessage("Name
 const emailValidator = body("email").trim().isEmail().withMessage("Incorrect email")
 const passwordValidator = body("password").trim().isLength({ min: 1 }).withMessage("Password is requared")
 
-authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response) => {
+authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response<LoginResponseType>) => {
   try {
     const { email, password } = request.body
     const requestData: LoginDataType = { email: email, password: password }
     const responseData = await authRepository.login(requestData)
-    if (responseData) {
-      response.status(200).send(responseData)
+    if (responseData === 0) {
+      response.status(200).send({ message: "Successfully", resultCode: 0 })
     } else {
-      response.status(401).send("Register or check the entered login or password")
+      response.status(401).send({ message: "Faild! Incorrect email or password or you are blocked", resultCode: 1 })
     }
   } catch {
-    response.status(400).send("Incorrect email or password")
+    response.status(401).send({ message: "Invalid request login data", resultCode: 1 })
   }
 })
 
