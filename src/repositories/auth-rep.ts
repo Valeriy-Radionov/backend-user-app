@@ -2,7 +2,7 @@ import { nanoid } from "nanoid"
 import { usersCollection } from "../common/database/userDatabase"
 import { LoginDataType, LogoutDataType, RegistrationDataType } from "../rotes/auth-router"
 import { UserType } from "./users-rep"
-import { ResultCode } from "../common/constants"
+import { ResultCode } from "../common/constants/constants"
 import { createUser } from "../common/utils/helpers/authHelper"
 
 export const authRepository = {
