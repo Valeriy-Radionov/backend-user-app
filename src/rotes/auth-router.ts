@@ -1,14 +1,14 @@
 import { Request, Response, Router } from "express"
-import { body } from "express-validator"
 import { ResultCode } from "../common/constants"
-import { inputValidatorsMiddleware } from "../common/validators/validators"
+import { emailValidator, inputValidatorsMiddleware, nameValidator, passwordValidator } from "../common/validators/validators"
 import { authRepository } from "../repositories/auth-rep"
+import { UserType } from "../repositories/users-rep"
 
 export type LoginDataType = {
   email: string
   password: string
 }
-export type LoginResponseType = {
+export type InfoResponseType = {
   resultCode: ResultCode
   message: string
 }
@@ -17,20 +17,19 @@ export type RegistrationDataType = {
   password: string
   name: string
 }
+export type LogoutDataType = {
+  id: string
+}
 
 export const authRouter = Router({})
 
-const nameValidator = body("name").trim().isLength({ min: 1 }).withMessage("Name is requared")
-const emailValidator = body("email").trim().isEmail().withMessage("Incorrect email")
-const passwordValidator = body("password").trim().isLength({ min: 1 }).withMessage("Password is requared")
-
-authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response<LoginResponseType>) => {
+authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMiddleware, async (request: Request, response: Response<UserType | InfoResponseType>) => {
   try {
     const { email, password } = request.body
     const requestData: LoginDataType = { email: email, password: password }
     const responseData = await authRepository.login(requestData)
-    if (responseData === 0) {
-      response.status(200).send({ message: "Successfully", resultCode: 0 })
+    if (responseData) {
+      response.status(201).send(responseData)
     } else {
       response.status(401).send({ message: "Faild! Incorrect email or password or you are blocked", resultCode: 1 })
     }
@@ -39,7 +38,7 @@ authRouter.post("/login", emailValidator, passwordValidator, inputValidatorsMidd
   }
 })
 
-authRouter.post("/registration", nameValidator, passwordValidator, emailValidator, inputValidatorsMiddleware, async (request: Request, response: Response) => {
+authRouter.post("/registration", nameValidator, passwordValidator, emailValidator, inputValidatorsMiddleware, async (request: Request, response: Response<UserType | InfoResponseType>) => {
   try {
     const { email, password, name } = request.body
     const user: RegistrationDataType = { email: email, password: password, name: name }
@@ -48,10 +47,16 @@ authRouter.post("/registration", nameValidator, passwordValidator, emailValidato
       response.status(201).send(newUser)
     }
   } catch {
-    response.status(400).send("Ingorrect request data")
+    response.status(401).send({ message: "Ingorrect request data", resultCode: 1 })
   }
 })
-authRouter.post("/me", async (request: Request, response: Response) => {
+
+authRouter.put("/logout", async (request: Request, response: Response<InfoResponseType>) => {
   try {
+    const id = request.body.id
+    const logout = await authRepository.logOut(id)
+    if (logout === 0) {
+      response.status(201).send({ message: "Logout", resultCode: 0 })
+    }
   } catch {}
 })

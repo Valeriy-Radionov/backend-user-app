@@ -1,4 +1,3 @@
-import { ModifyResult } from "mongodb"
 import { usersCollection } from "../common/database/userDatabase"
 
 export type UserType = {
@@ -38,6 +37,7 @@ export const usersRepository = {
       }
     } catch {
       console.log("Delete is failure")
+      return false
     }
   },
 }
