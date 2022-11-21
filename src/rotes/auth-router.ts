@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express"
-import { ResultCode } from "../common/constants"
+import { ResultCode } from "../common/constants/constants"
 import { emailValidator, inputValidatorsMiddleware, nameValidator, passwordValidator } from "../common/validators/validators"
 import { authRepository } from "../repositories/auth-rep"
 import { UserType } from "../repositories/users-rep"
@@ -47,7 +47,7 @@ authRouter.post("/registration", nameValidator, passwordValidator, emailValidato
       response.status(201).send(newUser)
     }
   } catch {
-    response.status(401).send({ message: "Ingorrect request data", resultCode: 1 })
+    response.status(401).send({ message: "Incorrect request data", resultCode: 1 })
   }
 })
 
@@ -58,5 +58,7 @@ authRouter.put("/logout", async (request: Request, response: Response<InfoRespon
     if (logout === 0) {
       response.status(201).send({ message: "Logout", resultCode: 0 })
     }
-  } catch {}
+  } catch {
+    response.status(401).send({ message: "Invalid request data", resultCode: 1 })
+  }
 })
