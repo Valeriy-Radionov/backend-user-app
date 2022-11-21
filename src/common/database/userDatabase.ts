@@ -2,6 +2,8 @@ import { MongoClient } from "mongodb"
 import { UserType } from "../../repositories/users-rep"
 
 const mongoUri = process.env.MONGODB_URI ? process.env.MONGODB_URI : "mongodb://localhost:27017"
+console.log(mongoUri)
+
 export const client = new MongoClient(mongoUri)
 const usersDb = client.db("user")
 export const usersCollection = usersDb.collection<UserType>("users")
