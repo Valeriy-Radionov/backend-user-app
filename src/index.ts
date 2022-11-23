@@ -4,6 +4,7 @@ import { runDb } from "./common/database/userDatabase"
 import { authRouter } from "./rotes/auth-router"
 import { usersRouter } from "./rotes/users-router"
 
+require("dotenv").config()
 const app = express()
 const port = process.env.PORT || 5000
 const parser = express.json()

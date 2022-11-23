@@ -33,17 +33,30 @@ export const authRepository = {
         }
       }
     } catch {
-      console.log("Error: Invalid data of login request or User is blocked")
+      console.log("Failed to find user in database")
       return null
     }
   },
-  async logOut(logoutUser: LogoutDataType): Promise<ResultCode | undefined | null> {
+  async logOut(id: string): Promise<ResultCode | undefined | null> {
     try {
-      logoutUser.id && (await usersCollection.findOneAndUpdate({ id: logoutUser.id }, { $set: { isAuth: false } }))
+      id && (await usersCollection.findOneAndUpdate({ id: id }, { $set: { isAuth: false } }))
       return 0
     } catch {
-      console.log("Error: Invalid data of logout request or User is't finde")
+      console.log("Error: Invalid data of logout request or User is't find")
       return 1
+    }
+  },
+
+  async me(id: string): Promise<boolean | undefined | null> {
+    try {
+      if (id) {
+        const user = await usersCollection.findOne({ id: id })
+        console.log(user?.email)
+
+        return user?.blockStatus
+      }
+    } catch {
+      return null
     }
   },
 }

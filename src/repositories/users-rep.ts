@@ -29,11 +29,14 @@ export const usersRepository = {
       return false
     }
   },
-  async deleteUser(id: string): Promise<boolean | undefined> {
+  async deleteUser(id: string, all: boolean): Promise<boolean | undefined> {
     try {
-      if (id) {
+      if (id && all === false) {
         const isDeleted = await usersCollection.deleteOne({ id: id })
-        return isDeleted.deletedCount === 1
+        return isDeleted.acknowledged
+      } else if (all === true) {
+        const isDeleted = await usersCollection.drop()
+        return true
       }
     } catch {
       console.log("Delete is failure")

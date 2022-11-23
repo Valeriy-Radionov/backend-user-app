@@ -47,11 +47,11 @@ authRouter.post("/registration", nameValidator, passwordValidator, emailValidato
       response.status(201).send(newUser)
     }
   } catch {
-    response.status(401).send({ message: "Incorrect request data", resultCode: 1 })
+    response.status(400).send({ message: "Incorrect request data", resultCode: 1 })
   }
 })
 
-authRouter.put("/logout", async (request: Request, response: Response<InfoResponseType>) => {
+authRouter.post("/logout", async (request: Request, response: Response<InfoResponseType>) => {
   try {
     const id = request.body.id
     const logout = await authRepository.logOut(id)
@@ -59,6 +59,18 @@ authRouter.put("/logout", async (request: Request, response: Response<InfoRespon
       response.status(201).send({ message: "Logout", resultCode: 0 })
     }
   } catch {
-    response.status(401).send({ message: "Invalid request data", resultCode: 1 })
+    response.status(400).send({ message: "Invalid request data", resultCode: 1 })
+  }
+})
+
+authRouter.post("/", async (request: Request, response: Response<boolean>) => {
+  const id = request.body.token
+
+  try {
+    const status = await authRepository.me(id)
+    console.log(status)
+    response.status(201).send(true)
+  } catch {
+    response.status(401)
   }
 })

@@ -15,18 +15,19 @@ usersRouter.get("/", async (request: Request, response: Response<UserType[] | In
   }
 })
 
-usersRouter.delete("/:id", async (request: Request, response: Response<InfoResponseType>) => {
+usersRouter.delete("/:id/:isAll", async (request: Request, response: Response<InfoResponseType>) => {
   try {
     const id = request.params.id
-    const isDeleted = await usersRepository.deleteUser(id)
+    const isAll = JSON.parse(request.params.isAll)
+    const isDeleted = await usersRepository.deleteUser(id, isAll)
 
-    if (isDeleted) {
+    if (isDeleted === true) {
       response.status(201).send(createResponse("User has been deleted", 0))
     } else {
-      response.status(401).send(createResponse("Not found!", 1))
+      response.status(400).send(createResponse("Not found!", 1))
     }
   } catch {
-    response.status(401).send(createResponse("Failure! User hasn't been deleted", 1))
+    response.status(400).send(createResponse("Failure! User hasn't been deleted", 1))
   }
 })
 
@@ -39,6 +40,6 @@ usersRouter.put("/:id", async (request: Request, response: Response<InfoResponse
       response.status(201).send(createResponse(`Block status: ${isBlocked}`, 0))
     }
   } catch {
-    response.status(401).send(createResponse("Failure! Error request", 1))
+    response.status(400).send(createResponse("Failure! Error request", 1))
   }
 })
