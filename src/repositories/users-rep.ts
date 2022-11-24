@@ -20,10 +20,15 @@ export const usersRepository = {
       return null
     }
   },
-  async blockUser(id: string, isBlocked: boolean): Promise<boolean> {
+  async blockUser(id: string, isBlocked: boolean, isAll: boolean): Promise<boolean> {
     try {
-      const newUser = await usersCollection.findOneAndUpdate({ id: id }, { $set: { blockStatus: isBlocked } }) //!возвращает новыйобьект не должно быть так
-      return newUser.ok === 0
+      if (!isAll) {
+        const newUser = await usersCollection.findOneAndUpdate({ id: id }, { $set: { blockStatus: isBlocked } })
+        return newUser.ok === 0
+      } else {
+        const blockAll = await usersCollection.updateMany({ blockStatus: false }, { $set: { blockStatus: true } })
+        return blockAll.acknowledged
+      }
     } catch {
       console.log("Error: Invalid status block request")
       return false
@@ -38,6 +43,13 @@ export const usersRepository = {
         const isDeleted = await usersCollection.drop()
         return true
       }
+      const rep: string[] = []
+      const res: boolean[] = []
+      rep.map(async (el) => {
+        const arr = await usersCollection.deleteOne({ id: el })
+        arr.acknowledged === false && res.push(arr.acknowledged)
+      })
+      res.length === 0 ? true : false
     } catch {
       console.log("Delete is failure")
       return false
