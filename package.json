@@ -1,6 +1,5 @@
 {
   "name": "backend-users-app",
-  "homepage": "https://Valeriy-Radionov.github.io/users-app-v1",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
