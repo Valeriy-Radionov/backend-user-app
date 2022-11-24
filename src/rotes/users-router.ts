@@ -31,10 +31,12 @@ usersRouter.delete("/:id/:isAll", async (request: Request, response: Response<In
   }
 })
 
-usersRouter.put("/:id", async (request: Request, response: Response<InfoResponseType>) => {
+usersRouter.put("/:id/:isBlocked", async (request: Request, response: Response<InfoResponseType>) => {
   try {
-    const isBlocked = request.body.isBlocked
+    const isBlocked = JSON.parse(request.params.isBlocked)
     const id = request.params.id
+    console.log(isBlocked)
+
     const blockUser = await usersRepository.blockUser(id, isBlocked)
     if (blockUser) {
       response.status(201).send(createResponse(`Block status: ${isBlocked}`, 0))
