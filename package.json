@@ -1,5 +1,6 @@
 {
   "name": "backend-users-app",
+  "homepage": "https://Valeriy-Radionov.github.io/users-app-v1",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -19,11 +20,14 @@
     "watch": "tsc -w",
     "dev": "nodemon --inspect dist/index.js",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
     "@types/node": "^18.11.9",
+    "gh-pages": "^4.0.0",
     "node": "16.13.0",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
