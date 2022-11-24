@@ -51,8 +51,6 @@ export const authRepository = {
     try {
       if (id) {
         const user = await usersCollection.findOne({ id: id })
-        console.log(user?.email)
-
         return user?.blockStatus
       }
     } catch {
