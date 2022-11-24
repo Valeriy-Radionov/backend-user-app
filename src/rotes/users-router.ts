@@ -15,11 +15,10 @@ usersRouter.get("/", async (request: Request, response: Response<UserType[] | In
   }
 })
 
-usersRouter.delete("/:id/:isAll", async (request: Request, response: Response<InfoResponseType>) => {
+usersRouter.put("/:delete", async (request: Request, response: Response<InfoResponseType>) => {
   try {
-    const id = request.params.id
-    const isAll = JSON.parse(request.params.isAll)
-    const isDeleted = await usersRepository.deleteUser(id, isAll)
+    const id = request.body.id
+    const isDeleted = await usersRepository.deleteUser(id)
 
     if (isDeleted === true) {
       response.status(201).send(createResponse("User has been deleted", 0))
@@ -31,14 +30,11 @@ usersRouter.delete("/:id/:isAll", async (request: Request, response: Response<In
   }
 })
 
-usersRouter.put("/:id/:isBlocked/:isAll", async (request: Request, response: Response<InfoResponseType>) => {
+usersRouter.put("/:block", async (request: Request, response: Response<InfoResponseType>) => {
   try {
-    const isBlocked = JSON.parse(request.params.isBlocked)
-    const isAll = JSON.parse(request.params.isAll)
-    const id = request.params.id
-    console.log(isBlocked)
-
-    const blockUser = await usersRepository.blockUser(id, isBlocked, isAll)
+    const isBlocked = request.body.isBlocked
+    const id = request.body.id
+    const blockUser = await usersRepository.blockUser(id, isBlocked)
     if (blockUser) {
       response.status(201).send(createResponse(`Block status: ${isBlocked}`, 0))
     }
