@@ -30,7 +30,7 @@ usersRouter.put("/:delete", async (request: Request, response: Response<InfoResp
   }
 })
 
-usersRouter.put("/:block", async (request: Request, response: Response<InfoResponseType>) => {
+usersRouter.post("/:block", async (request: Request, response: Response<InfoResponseType>) => {
   try {
     const isBlocked = request.body.isBlocked
     const id = request.body.id

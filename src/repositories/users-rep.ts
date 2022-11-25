@@ -24,8 +24,8 @@ export const usersRepository = {
     try {
       let resulstCode: boolean[] = []
       id.map(async (el) => {
-        const res = await usersCollection.findOneAndUpdate({ id: el }, { $set: { blockStatus: isBlocked } })
-        res.ok === 1 && resulstCode.push(false)
+        const res = await usersCollection.updateMany({ id: el }, { $set: { blockStatus: isBlocked } })
+        res.acknowledged === false && resulstCode.push(false)
       })
       return resulstCode.length === 0 ? true : false
     } catch {
